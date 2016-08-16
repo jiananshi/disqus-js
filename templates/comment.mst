@@ -1,0 +1,7 @@
+<li class="disqus-comment">
+  <img class="avatar" src="{{ avatar }}" alt="avatar">
+  <span class="username"></span>
+  <span class="date"></span>
+  <p class="comment"></p>
+</li>
+
