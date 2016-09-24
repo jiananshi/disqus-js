@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "mustache": "^2.2.1",
+    "normalize.css": "^4.2.0",
     "whatwg-fetch": "^1.0.0"
   }
 }

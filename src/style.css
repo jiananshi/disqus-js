@@ -1,17 +1,17 @@
-#disqus_thread {
+#disqus-thread {
   margin: 0;
   padding: 0;
   width: 100%;
   background: #fff; 
   list-style: none;
 
-  .disqus_lists {
+  .disqus-list {
     list-style: none;
     margin: 0;
     padding: 0;
   }
   
-  .disqus_comment {
+  .disqus-comment {
     overflow: auto;
     padding: 10px;
 
@@ -35,7 +35,7 @@
     }
   }
 
-  .disqus_form {
+  .disqus-form {
     margin-top: 30px;
     padding: 10px;
 

@@ -1,7 +1,10 @@
+{{ #response }}
+
 <li class="disqus-comment">
-  <img class="avatar" src="{{ avatar }}" alt="avatar">
-  <span class="username"></span>
-  <span class="date"></span>
-  <p class="comment"></p>
+  <img class="avatar" src="{{ author.avatar.cache }}" alt="avatar">
+  <span class="username">{{ author.username }}</span>
+  <span class="date">{{ createdAt }}</span>
+  <p class="comment">{{ raw_message }}</p>
 </li>
 
+{{ /response }}
