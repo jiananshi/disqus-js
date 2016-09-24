@@ -1,3 +1,3 @@
-build:
+dev:
 	webpack -w --progress
 
