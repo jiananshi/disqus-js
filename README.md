@@ -1,23 +1,13 @@
-## Disqus-jssdk
+## Usage
 
-> disqus proxy service for china mainland users
-
-### Usage
-
-```javascript
-import disqus from 'disqus';
-
-disqus.config({ api_key: 'xxx' });
-
-disqus.listPosts.get({ forum: 'your_personal_forum' });
+```html
+<script src="disqus-sdk.js"></script>
 ```
 
-### Document
-
-- [Auth](#doc1)
-- [Forum](#doc2)
-- [Thread](#doc3)
-- [Post](#doc4)
+```javascript
+Disqus.getComments()
+  .then(comments => {});
+```
 
 ### License
 

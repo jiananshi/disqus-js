@@ -160,8 +160,7 @@ document.addEventListener('DOMContentLoaded', _ => {
   Disqus.init({
     getComments: '//xiaoming.io/disqus/comments',
     createComment: '//xiaoming.io/disqus/comment',
-    getRecentComments: '//xiaoming.io/disqus/comments/recent',
-    getRelatedPosts: '//xiaoming.io/disqus/comments/relate'
+    getRecentComments: '//xiaoming.io/disqus/comments/recent'
   }, $commentsContainer);
 });
 
