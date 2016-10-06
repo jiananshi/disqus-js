@@ -2,12 +2,19 @@
 <html lang="zh-cn-Hans">
 <head>
   <meta charset="UTF-8">
-  <title>Document</title>
+  <title>Disqus SDK</title>
 
-  <script src="/dist/app.js"></script> 
+  <link rel="stylesheet" href="/style.css">
+  <script src="/dist/app.js"></script>
 </head>
 <body>
-  <h1>Disqus-jssdk</h1>
+  <h1>Disqus SDK</h1>
   <section id="disqus-thread"></section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      Disqus.getComments('http://yemengying.com/about/');
+    });
+  </script>
 </body>
 </html>

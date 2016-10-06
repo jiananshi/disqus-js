@@ -22,6 +22,7 @@
     "webpack": "^1.13.1"
   },
   "dependencies": {
+    "animate.css": "^3.5.2",
     "mustache": "^2.2.1",
     "normalize.css": "^4.2.0",
     "sweetalert": "^1.1.3",

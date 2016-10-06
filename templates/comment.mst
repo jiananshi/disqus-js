@@ -1,10 +1,26 @@
 {{ #response }}
 
-<li class="disqus-comment">
+<li class="disqus-comment {{ #parent }} disqus-response {{ /parent }}">
   <img class="avatar" src="{{ author.avatar.cache }}" alt="avatar">
-  <span class="username">{{ author.username }}</span>
-  <span class="date">{{ createdAt }}</span>
-  <p class="comment">{{ raw_message }}</p>
+
+  <div class="content">
+    {{ #author.username }}
+    <span class="username">{{ author.username }}</span>
+    {{ /author.username }}
+
+    {{ ^author.username }}
+    <span class="username">{{ author.name }}</span>
+    {{ /author.username }}
+
+    <span class="date">{{ dateFormatted }}</span>
+    <p class="comment">{{{ raw_message }}}</p>
+
+    <ul class="disqus-comment-control">
+      <li 
+        data-parent="{{ id }}" 
+        class="disqus-reply">回复</li>
+    </ul>
+  </div>
 </li>
 
 {{ /response }}

@@ -1,51 +1,25 @@
 import 'normalize.css';
 import './style.css';
 import 'sweetalert/dist/sweetalert.css';
+import 'animate.css';
 
 import Mustache from 'mustache';
 import 'whatwg-fetch';
 import 'sweetalert';
+import $tplHeader from '../templates/header.mst';
 import $tplComment from '../templates/comment.mst';
 import $tplForm from '../templates/form.mst';
 
+import { dateFormat, validate, sort } from './util';
+
 const DISQUS_SELECTOR = '#disqus-thread';
+const DISQUS_COMMENT_SELECTOR = '#disqus-comment';
+const DISQUS_REPLY_SELECTOR = '.disqus-reply';
 const COMMON_HEADERS = {
-  // TODO: add access control allow header
+  // TODO: add access-control-allow headers on server
   //'Accept': 'application/json',
   //'Content-Type': 'application/json'
 } ;
-
-function dateFormat(raw) {
-  let date = new Date(raw);
-  return `${ date.getFullYear() }.${ date.getMonth() + 1 }.${ date.getDate() }`;
-}
-
-function validate({ name, email, comment }) {
-  let isNameValid = name
-    && name.trim();
-
-  let isEmailValid = email
-    && /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email);
-
-  let isCommentValid = comment
-    && comment.trim();
-
-  let isValid = isNameValid && isEmailValid && isCommentValid;
-
-  switch(false) {
-    case !!isNameValid:
-      return { isValid, errorMsg: '昵称不能为空' };
-
-    case !!isEmailValid:
-      return { isValid, errorMsg: '邮箱格式不合法' };
-
-    case !!isCommentValid:
-      return { isValid, errorMsg: '评论不能为空' };
-
-    default:
-      return { isValid };
-  }
-}
 
 function addEvents(form) {
   let $button = form.querySelector('button');
@@ -53,7 +27,7 @@ function addEvents(form) {
   let $name = form.querySelector('#disqus-name');
   let $email = form.querySelector('#disqus-email');
 
-  $button.onclick = _ => {
+  $button.onclick = function() {
     let params = {
       name: $name.value,
       email: $email.value,
@@ -61,6 +35,10 @@ function addEvents(form) {
     };
 
     let { isValid, errorMsg } = validate(params);
+
+    if (this.getAttribute('data-parent')) {
+      params.parent = this.getAttribute('data-parent');
+    }
 
     if (!isValid) {
       return swal({
@@ -74,7 +52,7 @@ function addEvents(form) {
   };
 }
 
-function Disqus() {}
+var Disqus = window.Disqus = function() {};
 
 Disqus.init = function({ getComments, createComment, getRecentComments }, container) {
   this.apiUrl = {
@@ -82,6 +60,7 @@ Disqus.init = function({ getComments, createComment, getRecentComments }, contai
     createComment,
     getRecentComments
   };
+
   this.container = container;
 };
 
@@ -95,6 +74,7 @@ Disqus.getComments = function(url) {
       headers: COMMON_HEADERS
     })
     .then(res => res.json())
+    .then(sort)
     .then(this.createDom);
 };
 
@@ -115,10 +95,12 @@ Disqus.createComment = function({ name, email, comment }) {
       });
     })
     .catch(e => {
-      // TODO: 打个 log
+      // 留条 log
+      fetch(`//xiaoming.io/disqus/log?${ JSON.stringify(e) }`);
+
       swal({
         title: '评论发送失败',
-        text: `${ e }，请稍后重新发送评论或联系管理员: klamtine@gmail.com`,
+        text: `${ e }，请稍后重试或将错误提交给我们`,
         type: 'error',
         confirmButtonText: '好的'
       });
@@ -128,17 +110,43 @@ Disqus.createComment = function({ name, email, comment }) {
 Disqus.createDom = function(raw) {
   let $form = document.createElement('form');
   let $list = document.createElement('ul');
+  let $header = Mustache.render($tplHeader, { total: raw.response.length });
 
   $form.classList.add('disqus-form');
   $form.innerHTML = $tplForm;
-  $list.classList.add('disqus-list');
+  $list.classList.add('disqus-list', 'animated', 'slideInUp');
 
   $list.innerHTML = Mustache.render($tplComment, raw);
 
-  Disqus.container.appendChild($list);
+  Disqus.container.innerHTML = $header;
   Disqus.container.appendChild($form);
+  Disqus.container.appendChild($list);
 
   addEvents($form);
+
+  let $comment = $form.querySelector(DISQUS_COMMENT_SELECTOR);
+
+  [].forEach.call($list.querySelectorAll(DISQUS_REPLY_SELECTOR), $dom => {
+    $dom.addEventListener('click', function(e) {
+      if (!e.target.classList.contains('disqus-reply')) return;
+
+      this.isReplying = !this.isReplying;
+
+      if (this.isReplying) {
+        let $replyForm = $form.cloneNode(true);
+
+        $replyForm.querySelector('button')
+          .setAttribute('data-parent', this.getAttribute('data-parent'));
+
+        addEvents($replyForm);
+
+        this.appendChild($replyForm);
+      } else {
+        console.info(this.querySelector('form'));
+        this.removeChild(this.querySelector('form'));
+      }
+    });
+  });
 };
 
 document.addEventListener('DOMContentLoaded', _ => {
@@ -151,10 +159,9 @@ document.addEventListener('DOMContentLoaded', _ => {
 
   Disqus.init({
     getComments: '//xiaoming.io/disqus/comments',
-    createComment: '//xiaoming.io/disqus/comments',
-    getRecentComments: '//xiaoming.io/disqus/comments/recent'
+    createComment: '//xiaoming.io/disqus/comment',
+    getRecentComments: '//xiaoming.io/disqus/comments/recent',
+    getRelatedPosts: '//xiaoming.io/disqus/comments/relate'
   }, $commentsContainer);
-
-  Disqus.getComments('http://yemengying.com/2016/07/25/spring-xml/');
 });
 
