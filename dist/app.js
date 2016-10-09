@@ -165,7 +165,8 @@
 
 	  return fetch(createComment, {
 	    method: 'POST',
-	    headers: COMMON_HEADERS
+	    headers: COMMON_HEADERS,
+	    body: (0, _stringify2.default)({ name: name, email: email, comment: comment })
 	  }).then(function (res) {
 	    return res.json();
 	  }).then(function (_) {

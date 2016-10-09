@@ -2,18 +2,35 @@
 <html lang="zh-cn-Hans">
 <head>
   <meta charset="UTF-8">
-  <title>Disqus SDK</title>
+  <title>Disqus Proxy</title>
 
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="//github.elemecdn.com/rstacruz/nprogress/master/nprogress.css">
+  <script src="//github.elemecdn.com/rstacruz/nprogress/master/nprogress.js"></script>
   <script src="dist/app.js"></script>
 </head>
 <body>
-  <h1>Disqus SDK</h1>
+  <h1 class="logo">Disqus Proxy</h1>
+  <small class="intro">disqus api 反向代理服务</small>
+
+  <section class="demo">
+    <input id="keyword" type="text" placeholder="输入文章访问链接">
+    <button id="search">确定</button>
+  </section>
+
   <section id="disqus-thread"></section>
+
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      Disqus.getComments('http://yemengying.com/about/');
+      var $btn = document.getElementById('search');
+      var $input = document.getElementById('keyword');
+
+      $btn.onclick = function() {
+        NProgress.start();
+        Disqus.getComments($input.value).then(_ => NProgress.done());
+      }
     });
   </script>
 </body>

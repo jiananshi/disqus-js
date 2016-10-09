@@ -83,7 +83,8 @@ Disqus.createComment = function({ name, email, comment }) {
 
   return fetch(createComment, {
       method: 'POST',
-      headers: COMMON_HEADERS
+      headers: COMMON_HEADERS,
+      body: JSON.stringify({ name, email, comment })
     })
     .then(res => res.json())
     .then(_ => {
