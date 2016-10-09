@@ -67,7 +67,10 @@ Disqus.init = function({ getComments, createComment, getRecentComments }, contai
 Disqus.getComments = function(url) {
   let { getComments } = Disqus.apiUrl;
 
-  if (url) getComments += `?url=${ url }`;
+  if (url) {
+    getComments += `?url=${ url }`;
+    this.url = url;
+  }
 
   return fetch(getComments, {
       method: 'GET',
@@ -78,13 +81,17 @@ Disqus.getComments = function(url) {
     .then(this.createDom);
 };
 
-Disqus.createComment = function({ name, email, comment }) {
+Disqus.createComment = function(params) {
   let { createComment } = Disqus.apiUrl;
+
+  if (this.url) {
+    params.url = this.url;
+  }
 
   return fetch(createComment, {
       method: 'POST',
       headers: COMMON_HEADERS,
-      body: JSON.stringify({ name, email, comment })
+      body: JSON.stringify(params)
     })
     .then(res => res.json())
     .then(_ => {

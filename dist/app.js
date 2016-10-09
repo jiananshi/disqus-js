@@ -146,7 +146,10 @@
 	  var getComments = Disqus.apiUrl.getComments;
 
 
-	  if (url) getComments += '?url=' + url;
+	  if (url) {
+	    getComments += '?url=' + url;
+	    this.url = url;
+	  }
 
 	  return fetch(getComments, {
 	    method: 'GET',
@@ -156,17 +159,18 @@
 	  }).then(_util.sort).then(this.createDom);
 	};
 
-	Disqus.createComment = function (_ref2) {
-	  var name = _ref2.name;
-	  var email = _ref2.email;
-	  var comment = _ref2.comment;
+	Disqus.createComment = function (params) {
 	  var createComment = Disqus.apiUrl.createComment;
 
+
+	  if (this.url) {
+	    params.url = this.url;
+	  }
 
 	  return fetch(createComment, {
 	    method: 'POST',
 	    headers: COMMON_HEADERS,
-	    body: (0, _stringify2.default)({ name: name, email: email, comment: comment })
+	    body: (0, _stringify2.default)(params)
 	  }).then(function (res) {
 	    return res.json();
 	  }).then(function (_) {
