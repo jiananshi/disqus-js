@@ -1,0 +1,17 @@
+{{ #response }}
+
+<li class="disqus-recentcomment">
+  {{ #author.username }}
+  <span class="disqus-recentcomment-name">{{ author.username }}</span>
+  {{ /author.username }}
+
+  {{ ^author.username }}
+  <span class="disqus-recentcomment-name">{{ author.name }}</span>
+  {{ /author.username }}
+
+  <span class="disqus-recentcomment-date">{{ dateFormatted }}</span>
+
+  <a target="_blank" class="disqus-recentcomment-content" href="{{ url }}">{{ raw_message }}</a>
+</li>
+
+{{ /response }}

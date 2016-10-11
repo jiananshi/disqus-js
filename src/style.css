@@ -1,4 +1,4 @@
-#disqus-thread {
+#disqus_thread {
   font-family: 'PingFang SC', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Helvetica Neue', 'Helvetica', 'STHeitiSC-Light';
   font-weight: 300;
   margin: 0;
@@ -143,6 +143,33 @@
   .disqus-notice {
     color: #7f919e;
     font-size: .9em;
+  }
+}
+
+#disqus-recent-comments {
+  list-style: none;
+
+  .disqus-recentcomment {
+    margin-bottom: 15px;
+
+    .disqus-recentcomment-name {
+      display: inline-block;
+      margin-bottom: 5px;
+    }
+
+    .disqus-recentcomment-date {
+      float: right;
+    }
+
+    .disqus-recentcomment-content {
+      color: #38b7ea;
+      text-decoration: none;
+      width: 100%;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      display: inline-block;
+    }
   }
 }
 

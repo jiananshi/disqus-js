@@ -6,14 +6,17 @@ import 'animate.css';
 import Mustache from 'mustache';
 import 'whatwg-fetch';
 import 'sweetalert';
+
 import $tplHeader from '../templates/header.mst';
 import $tplComment from '../templates/comment.mst';
+import $tplRecentComment from '../templates/recent-comment.mst';
 import $tplForm from '../templates/form.mst';
 
 import { dateFormat, validate, sort } from './util';
 
-const DISQUS_SELECTOR = '#disqus-thread';
+const DISQUS_SELECTOR = '#disqus_thread';
 const DISQUS_COMMENT_SELECTOR = '#disqus-comment';
+const DISQUS_RECENT_COMMENTS_SELECTOR = '#disqus-recent-comments';
 const DISQUS_REPLY_SELECTOR = '.disqus-reply';
 const COMMON_HEADERS = {
   // TODO: add access-control-allow headers on server
@@ -54,18 +57,22 @@ function addEvents(form) {
 
 var Disqus = window.Disqus = function() {};
 
-Disqus.init = function({ getComments, createComment, getRecentComments }, container) {
+Disqus.init = function({ getComments, createComment, getRecentComments }) {
   this.apiUrl = {
     getComments,
     createComment,
     getRecentComments
   };
-
-  this.container = container;
 };
 
-Disqus.getComments = function(url) {
+Disqus.getComments = function(url, container) {
+  let $commentsContainer = container || document.querySelector(DISQUS_SELECTOR);
   let { getComments } = Disqus.apiUrl;
+
+  if (!$commentsContainer) {
+    console.warn(`Counld't find dom element: ${ DISQUS_SELECTOR }`);
+    return;
+  }
 
   if (url) {
     getComments += `?url=${ url }`;
@@ -78,16 +85,17 @@ Disqus.getComments = function(url) {
     })
     .then(res => res.json())
     .then(sort)
-    .then(this.createDom);
+    .then(comments => this.createDom(comments, $commentsContainer));
 };
 
-Disqus.getRecentComments = function() {
+Disqus.getRecentComments = function(container) {
   let { getRecentComments } = Disqus.apiUrl;
 
   return fetch(getRecentComments, {
     headers: COMMON_HEADERS
   })
-  .then(res => res.json());
+  .then(res => res.json())
+  .then(comments => this.createRecentCommentsDom(comments, container));
 }
 
 Disqus.createComment = function(params) {
@@ -124,7 +132,7 @@ Disqus.createComment = function(params) {
     });
 };
 
-Disqus.createDom = function(raw) {
+Disqus.createDom = function(raw, container) {
   let $form = document.createElement('form');
   let $list = document.createElement('ul');
   let $header = Mustache.render($tplHeader, { total: raw.response.length });
@@ -135,9 +143,9 @@ Disqus.createDom = function(raw) {
 
   $list.innerHTML = Mustache.render($tplComment, raw);
 
-  Disqus.container.innerHTML = $header;
-  Disqus.container.appendChild($form);
-  Disqus.container.appendChild($list);
+  container.innerHTML = $header;
+  container.appendChild($form);
+  container.appendChild($list);
 
   addEvents($form);
 
@@ -159,24 +167,29 @@ Disqus.createDom = function(raw) {
 
         this.appendChild($replyForm);
       } else {
-        console.info(this.querySelector('form'));
         this.removeChild(this.querySelector('form'));
       }
     });
   });
 };
 
+Disqus.createRecentCommentsDom = function(raw, container) {
+  let $recentCommentsContainer = container || 
+    document.querySelector(DISQUS_RECENT_COMMENTS_SELECTOR);
+
+  $recentCommentsContainer.innerHTML = Mustache.render($tplRecentComment, { 
+    response: raw.response, 
+    dateFormatted: function() {
+      return dateFormat(this.createdAt)
+    } 
+  });
+}
+
 document.addEventListener('DOMContentLoaded', _ => {
-  let $commentsContainer = document.querySelector(DISQUS_SELECTOR);
-
-  if (!$commentsContainer) {
-    console.warn(`Counld't find dom element: ${ DISQUS_SELECTOR }`);
-  }
-
   Disqus.init({
     getComments: '//xiaoming.io/disqus/comments',
     createComment: '//xiaoming.io/disqus/comment',
     getRecentComments: '//xiaoming.io/disqus/comments/recent'
-  }, $commentsContainer);
+  });
 });
 
