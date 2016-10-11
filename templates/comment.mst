@@ -15,6 +15,10 @@
     <span class="date">{{ dateFormatted }}</span>
     <p class="comment">{{{ raw_message }}}</p>
 
+    {{ #media.length }}
+    <img src="{{ media.0.location }}" alt="comment image">
+    {{ /media.length }}
+
     <ul class="disqus-comment-control">
       <li 
         data-parent="{{ id }}" 

@@ -81,6 +81,15 @@ Disqus.getComments = function(url) {
     .then(this.createDom);
 };
 
+Disqus.getRecentComments = function() {
+  let { getRecentComments } = Disqus.apiUrl;
+
+  return fetch(getRecentComments, {
+    headers: COMMON_HEADERS
+  })
+  .then(res => res.json());
+}
+
 Disqus.createComment = function(params) {
   let { createComment } = Disqus.apiUrl;
 

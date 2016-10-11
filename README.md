@@ -6,7 +6,12 @@
 
 ```javascript
 Disqus.getComments()
-  .then(comments => {});
+  .then(comments => {
+  });
+
+Disqus.getRecentComments()
+  .then(comments => {
+  })
 ```
 
 ### License
