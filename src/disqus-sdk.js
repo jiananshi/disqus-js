@@ -171,7 +171,6 @@ document.addEventListener('DOMContentLoaded', _ => {
 
   if (!$commentsContainer) {
     console.warn(`Counld't find dom element: ${ DISQUS_SELECTOR }`);
-    return;
   }
 
   Disqus.init({
