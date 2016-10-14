@@ -31,12 +31,13 @@ export function validate({ name, email, comment }) {
 }
 
 export function sort({ response }) {
+  response.reverse();
+
   let idMap = response.map(record => +record.id);
 
   // 子回复用数组存到父回复下
+  response.forEach(record => record.children = []);
   response.forEach(record => {
-    record.children = [];
-
     if (record.parent) {
       let parentIndex = idMap.indexOf(+record.parent);
       response[parentIndex].children.push(record); 

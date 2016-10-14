@@ -174,14 +174,14 @@ Disqus.createDom = function(raw, container) {
 };
 
 Disqus.createRecentCommentsDom = function(raw, container) {
-  let $recentCommentsContainer = container || 
+  let $recentCommentsContainer = container ||
     document.querySelector(DISQUS_RECENT_COMMENTS_SELECTOR);
 
-  $recentCommentsContainer.innerHTML = Mustache.render($tplRecentComment, { 
-    response: raw.response, 
+  $recentCommentsContainer.innerHTML = Mustache.render($tplRecentComment, {
+    response: raw.response,
     dateFormatted: function() {
       return dateFormat(this.createdAt)
-    } 
+    }
   });
 }
 
