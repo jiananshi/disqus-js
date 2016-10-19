@@ -1,13 +1,22 @@
 {
-  "name": "disqus-sdk",
+  "name": "disqus-proxy-client",
   "version": "1.0.0",
   "description": "",
-  "main": "disqus-sdk.js",
+  "main": "./dist/app.js",
   "scripts": {
     "dev": "babel ./disqus-sdk.js --watch --source-maps --out-file dist/dist.js"
   },
   "author": "WXiaoming",
   "license": "MIT",
+  "docpress": {
+    "github": "Disqus-proxy/disqus-proxy-client",
+    "css": [
+      "http://ricostacruz.com/docpress-rsc/style.css"
+    ],
+    "markdown": {
+      "typographer": true 
+    }
+  },
   "devDependencies": {
     "babel-cli": "^6.11.4",
     "babel-loader": "^6.2.4",

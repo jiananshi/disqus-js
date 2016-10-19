@@ -1,41 +1,101 @@
 <!DOCTYPE html>
-<html lang="zh-cn-Hans">
-<head>
-  <meta charset="UTF-8">
-  <meta name="MobileOptimized" content="320">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui">
-  <title>Disqus Proxy</title>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="assets/style.css?t=d358ee59">
+    <link rel="stylesheet" href="http://ricostacruz.com/docpress-rsc/style.css">
+    <script src="assets/script.js?t=36f3d457"></script>
+    <title>API</title>
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body class="-menu-visible">
+    <div class="doc-layout">
+      <div class="toggle menu-toggle js-menu-toggle"></div>
+      <div class="menu toc-menu">
+        <li class="menu-item -level-0 -parent">
+          <ul class="submenu">
+            <li class="menu-item -level-1"><a class="link title -active link-index" href="index.html">API</a>
+            </li>
+            <li class="menu-item -level-1 -parent"><a class="link title link-api" href="#api">API</a>
+              <ul class="submenu">
+                <li class="menu-item -level-2"><a class="link title link-license" href="#license">License</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </div>
+      <div class="body page-index">
+        <div class="header-nav">
+          <div class="right"><a class="iconlink" href="https://github.com/Disqus-proxy/disqus-proxy-client" data-title="Disqus-proxy/disqus-proxy-client">
+              <!-- span.title Open in GitHub--><span class="icon -github"></span></a>
+          </div>
+        </div>
+        <div class="markdown-body"><h1 class="massive-header -with-tagline" id="disqus-proxy-client">Disqus-proxy-client</h1>
+<blockquote>
+<p>comments sharing without boundary</p>
+</blockquote>
+<h2 id="api">API</h2>
+<ul>
+<li><a href="#doc-init">init</a></li>
+<li><a href="#doc-getcomments">getComments</a></li>
+<li><a href="#doc-getrecentcomments">getRecentComments</a></li>
+</ul>
+<p></p><h2 id="init">init</h2><p></p>
+<p>initialize api url</p>
+<pre><code class="lang-javascript">Disqus.init({
+	<span class="hljs-attr">getComments</span>: <span class="pl-s">&apos;//yourdomain.com/api/comments&apos;</span>,
+	<span class="hljs-attr">getRecentComments</span>: <span class="pl-s">&apos;//yourdomain.com/api/comments?type=recent&apos;</span>,
+	<span class="hljs-attr">createComment</span>: <span class="pl-s">&apos;//yourdomain.com/api/comments&apos;</span>
+});
+</code></pre>
+<p></p><h2 id="getcomments">getComments</h2><p></p>
+<pre><code class="lang-javascript"><span class="pl-c">/**
+ * params: comments
+ * dataStructure: {
+ *   author: {},
+ *   createdAt: &apos;2016-10-19T00:50:16&apos;,
+ *   forum: &apos;yourdisqusforum&apos;,
+ *   id: &apos;897893279&apos;,
+ *   media: [],
+ *   message: &apos;&lt;p&gt;comment something&lt;/p&gt;&apos;,
+ *   raw_message: &apos;comment something&apos;
+ * }
+ *
+ */</span>
+Disqus.getComments(
+	<span class="pl-s">&apos;http://yourdomain.com/post-a&apos;</span>,
+	<span class="pl-c1">document</span>.querySelector(<span class="pl-s">&apos;#comments-container&apos;</span>)).then(<span class="hljs-function"><span class="hljs-params">comments</span> =&gt;</span> {
 
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="//github.elemecdn.com/rstacruz/nprogress/master/nprogress.css">
-  <script src="//github.elemecdn.com/rstacruz/nprogress/master/nprogress.js"></script>
-  <script src="dist/app.js"></script>
-</head>
-<body>
-  <h1 class="logo">Disqus Proxy</h1>
-  <small class="intro">disqus api 反向代理服务</small>
+	<span class="pl-c">// now ur able 2 do something with `comments`</span>
+});
+</code></pre>
+<p></p><h2 id="getrecentcomments">getRecentComments</h2><p></p>
+<pre><code class="lang-javascript"><span class="pl-c">/**
+ * params: comments
+ * dataStructure: {
+ *   author: {},
+ *   createdAt: &apos;2016-10-19T00:50:16&apos;,
+ *   forum: &apos;yourdisqusforum&apos;,
+ *   id: &apos;897893279&apos;,
+ *   media: [],
+ *   message: &apos;&lt;p&gt;comment something&lt;/p&gt;&apos;,
+ *   raw_message: &apos;comment something&apos;
+ * }
+ *
+ */</span>
+Disqus.getRecentComments(
+	<span class="pl-s">&apos;http://yourdomain.com&apos;</span>,
+	<span class="pl-c1">document</span>.querySelector(<span class="pl-s">&apos;#recent-comments-container&apos;</span>)).then(<span class="hljs-function"><span class="hljs-params">comments</span> =&gt;</span> {
 
-  <section class="demo">
-    <input id="keyword" type="text" placeholder="输入文章访问链接">
-    <button id="search">确定</button>
-  </section>
+	<span class="pl-c">// now ur able 2 do something with `comments`</span>
+});
+</code></pre>
+<h3 id="license">License</h3>
+<p>MIT</p>
 
-  <section id="disqus-recent-comments"></section>
-
-  <section id="disqus_thread"></section>
-
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var $btn = document.getElementById('search');
-      var $input = document.getElementById('keyword');
-
-      $btn.onclick = function() {
-        NProgress.start();
-        Disqus.getComments($input.value).then(_ => NProgress.done());
-      }
-    });
-  </script>
-</body>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>

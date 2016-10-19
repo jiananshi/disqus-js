@@ -20,8 +20,8 @@
     {{ /media.length }}
 
     <ul class="disqus-comment-control">
-      <li 
-        data-parent="{{ id }}" 
+      <li
+        data-parent="{{ id }}"
         class="disqus-reply">回复</li>
     </ul>
   </div>

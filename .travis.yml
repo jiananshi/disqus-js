@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- 4
+
+script:
+- npm install docpress && ./node_modules/.bin/docpress build
+
+after_success:
+- if [ "$TRAVIS_BRANCH" = "master" -a "$TRAVIS_PULL_REQUEST" = "false" ]; then mv ./_docpress/index.html .; fi
+ ]
+
