@@ -4,17 +4,18 @@
   "description": "",
   "main": "./dist/app.js",
   "scripts": {
-    "dev": "babel ./disqus-sdk.js --watch --source-maps --out-file dist/dist.js"
+    "install": "npm install",
+    "watch": "webpack -w --progress"
   },
   "author": "WXiaoming",
   "license": "MIT",
   "docpress": {
     "github": "Disqus-proxy/disqus-proxy-client",
     "css": [
-      "http://ricostacruz.com/docpress-rsc/style.css"
+      "docs/style.css"
     ],
     "markdown": {
-      "typographer": true 
+      "typographer": false
     }
   },
   "devDependencies": {

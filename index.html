@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="assets/style.css?t=d358ee59">
-    <link rel="stylesheet" href="http://ricostacruz.com/docpress-rsc/style.css">
+    <link rel="stylesheet" href="style.css?t=5e8b9154">
     <script src="assets/script.js?t=36f3d457"></script>
-    <title>API</title>
+    <title>Client</title>
     <meta name="viewport" content="width=device-width">
   </head>
   <body class="-menu-visible">
@@ -14,13 +14,23 @@
       <div class="menu toc-menu">
         <li class="menu-item -level-0 -parent">
           <ul class="submenu">
-            <li class="menu-item -level-1"><a class="link title -active link-index" href="index.html">API</a>
-            </li>
-            <li class="menu-item -level-1 -parent"><a class="link title link-api" href="#api">API</a>
-              <ul class="submenu">
-                <li class="menu-item -level-2"><a class="link title link-license" href="#license">License</a>
+            <li class="menu-item -level-1"><a class="link title -active link-index" href="index.html">Client</a>
+              <ul class="headings heading-list">
+                <li class="heading-item -depth-2"><a class="hlink link-explain" href="#explain">Explain</a>
+                </li>
+                <li class="heading-item -depth-2"><a class="hlink link-usage" href="#usage">Usage</a>
+                </li>
+                <li class="heading-item -depth-2"><a class="hlink link-contribute" href="#contribute">Contribute</a>
+                </li>
+                <li class="heading-item -depth-2"><a class="hlink link-supports" href="#supports">Supports</a>
+                </li>
+                <li class="heading-item -depth-2"><a class="hlink link-license" href="#license">License</a>
                 </li>
               </ul>
+            </li>
+            <li class="menu-item -level-1"><a class="link title  link-api" href="api.html">API</a>
+            </li>
+            <li class="menu-item -level-1"><a class="link title  link-example" href="example.html">EXAMPLE</a>
             </li>
           </ul>
         </li>
@@ -31,69 +41,70 @@
               <!-- span.title Open in GitHub--><span class="icon -github"></span></a>
           </div>
         </div>
-        <div class="markdown-body"><h1 class="massive-header -with-tagline" id="disqus-proxy-client">Disqus-proxy-client</h1>
+        <div class="markdown-body"><h1 class="massive-header -with-tagline" id="disqus-proxyclient">Disqus-proxy/Client</h1>
 <blockquote>
-<p>comments sharing without boundary</p>
+<p>sharing thoughts through gfw</p>
 </blockquote>
-<h2 id="api">API</h2>
-<ul>
-<li><a href="#doc-init">init</a></li>
-<li><a href="#doc-getcomments">getComments</a></li>
-<li><a href="#doc-getrecentcomments">getRecentComments</a></li>
-</ul>
-<p></p><h2 id="init">init</h2><p></p>
-<p>initialize api url</p>
-<pre><code class="lang-javascript">Disqus.init({
-	<span class="hljs-attr">getComments</span>: <span class="pl-s">&apos;//yourdomain.com/api/comments&apos;</span>,
-	<span class="hljs-attr">getRecentComments</span>: <span class="pl-s">&apos;//yourdomain.com/api/comments?type=recent&apos;</span>,
-	<span class="hljs-attr">createComment</span>: <span class="pl-s">&apos;//yourdomain.com/api/comments&apos;</span>
-});
+<h2 id="explain">Explain</h2>
+<p>&#x7531;&#x4E8E;&#x4F17;&#x6240;&#x5468;&#x77E5;&#x7684;&#x539F;&#x56E0;&#xFF0C;Disqus &#x670D;&#x52A1;&#x5728;&#x56FD;&#x5185;&#x65E0;&#x6CD5;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#xFF0C;&#x6240;&#x5E78; Disqus &#x7684; API &#x662F; <a href="https://disqus.com/api/docs/">&#x5F00;&#x653E;&#x7684;</a>&#xFF0C;&#x4E8E;&#x662F;&#x5199;&#x4E86;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x5C0F;&#x5DE5;&#x5177;&#x3002;</p>
+<p>disqus-proxy/client &#x5728;&#x4F60;&#x90E8;&#x7F72;&#x597D;&#x670D;&#x52A1;&#x7AEF;&#x540E;&#x901A;&#x8FC7;&#x53CD;&#x5411;&#x4EE3;&#x7406;&#x7684;&#x65B9;&#x5F0F;&#x8C03;&#x7528; disqus &#x7684;&#x63A5;&#x53E3;&#xFF0C;&#x7528;&#x6237;&#x8BBF;&#x95EE;&#x4F60;&#x7684;&#x7F51;&#x7AD9;&#x65E0;&#x9700;&#x7FFB;&#x5899;&#x4E5F;&#x53EF;&#x4EE5;&#x6B63;&#x5E38;&#x4F7F;&#x7528; Disqus &#x670D;&#x52A1;&#x3002;</p>
+<h2 id="usage">Usage</h2>
+<!-- 目前很多功能依然在开发中，目前已有的功能都在 [方法](docs/methods.md) 里面 -->
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="pl-s">&quot;disqus-proxy-client.min.js&quot;</span>&gt;</span><span class="undefined"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </code></pre>
-<p></p><h2 id="getcomments">getComments</h2><p></p>
-<pre><code class="lang-javascript"><span class="pl-c">/**
- * params: comments
- * dataStructure: {
- *   author: {},
- *   createdAt: &apos;2016-10-19T00:50:16&apos;,
- *   forum: &apos;yourdisqusforum&apos;,
- *   id: &apos;897893279&apos;,
- *   media: [],
- *   message: &apos;&lt;p&gt;comment something&lt;/p&gt;&apos;,
- *   raw_message: &apos;comment something&apos;
- * }
- *
- */</span>
-Disqus.getComments(
-	<span class="pl-s">&apos;http://yourdomain.com/post-a&apos;</span>,
-	<span class="pl-c1">document</span>.querySelector(<span class="pl-s">&apos;#comments-container&apos;</span>)).then(<span class="hljs-function"><span class="hljs-params">comments</span> =&gt;</span> {
+<p>&#x5982;&#x679C;&#x5E0C;&#x671B;&#x5BF9;&#x672A;&#x7FFB;&#x5899;&#x7528;&#x6237;&#x4F7F;&#x7528;&#x539F;&#x672C;&#x7684; disqus&#xFF0C;&#x4EE3;&#x7801;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x4E0B;&#x9762;&#xFF1A;</p>
+<pre><code class="lang-html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">
+  <span class="pl-k">var</span> disqus_shortname = <span class="pl-s">&apos;your_disqus_forumname&apos;</span>;
+  <span class="pl-k">var</span> timer;
 
-	<span class="pl-c">// now ur able 2 do something with `comments`</span>
-});
+  (<span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="pl-k">var</span> dsq = <span class="pl-c1">document</span>.createElement(<span class="pl-s">&apos;script&apos;</span>);
+    dsq.type = <span class="pl-s">&apos;text/javascript&apos;</span>;
+    dsq.async = <span class="pl-c1">true</span>;
+
+    dsq.onload = <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params"></span>) </span>{
+      clearTimeout(timer);
+    }
+
+    <span class="pl-c">// &#x811A;&#x672C;&#x653E;&#x5728;&#x9875;&#x9762;&#x5E95;&#x90E8;&#x8981;&#x786E;&#x4FDD;&#x5DF2;&#x52A0;&#x8F7D; disqus-proxy-client</span>
+    <span class="pl-c1">document</span>.addEventListener(<span class="pl-s">&apos;DOMContentLoaded&apos;</span>, <span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params"></span>) </span>{
+      Disqus.getRecentComments();
+    });
+
+    <span class="pl-c">// 3000ms &#x540E;&#x811A;&#x672C;&#x4ECD;&#x672A;&#x52A0;&#x8F7D;&#x51FA;&#x6765;&#xFF0C;&#x8C03;&#x7528; disqus-proxy-client &#x7684;&#x65B9;&#x6CD5;</span>
+    <span class="pl-c">// Note: &#x5982;&#x679C;&#x4F60;&#x6709;&#x66F4;&#x597D;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x6B22;&#x8FCE;&#x4E00;&#x8D77;&#x63A2;&#x8BA8; @WXiaoming</span>
+    timer = setTimeout(<span class="hljs-function"><span class="pl-k">function</span>(<span class="hljs-params"></span>) </span>{
+      Disqus.getComments();
+    }, <span class="hljs-number">3000</span>);
+
+    dsq.src = <span class="pl-s">&apos;//&apos;</span> + disqus_shortname + <span class="pl-s">&apos;.disqus.com/count.js&apos;</span>;
+
+  (<span class="pl-c1">document</span>.getElementsByTagName(<span class="pl-s">&apos;head&apos;</span>)[<span class="hljs-number">0</span>] || <span class="pl-c1">document</span>.getElementsByTagName(<span class="pl-s">&apos;body&apos;</span>)[<span class="hljs-number">0</span>]).appendChild(dsq);
+  })();
+</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>
 </code></pre>
-<p></p><h2 id="getrecentcomments">getRecentComments</h2><p></p>
-<pre><code class="lang-javascript"><span class="pl-c">/**
- * params: comments
- * dataStructure: {
- *   author: {},
- *   createdAt: &apos;2016-10-19T00:50:16&apos;,
- *   forum: &apos;yourdisqusforum&apos;,
- *   id: &apos;897893279&apos;,
- *   media: [],
- *   message: &apos;&lt;p&gt;comment something&lt;/p&gt;&apos;,
- *   raw_message: &apos;comment something&apos;
- * }
- *
- */</span>
-Disqus.getRecentComments(
-	<span class="pl-s">&apos;http://yourdomain.com&apos;</span>,
-	<span class="pl-c1">document</span>.querySelector(<span class="pl-s">&apos;#recent-comments-container&apos;</span>)).then(<span class="hljs-function"><span class="hljs-params">comments</span> =&gt;</span> {
+<h2 id="contribute">Contribute</h2>
+<ol>
+<li>
+<p>Fork this repository to your own GitHub account and then clone it to your local device</p>
+</li>
+<li>
+<p>Install the dependencies: npm run install</p>
+</li>
+<li>
+<p>Build the code and watch for changes: npm run watch</p>
+</li>
+</ol>
+<p>After that, all files would be built under dist folder</p>
+<h2 id="supports">Supports</h2>
+<p><a href="https://gitter.im/disqus-proxy-client/Lobby#">Gitter Chat</a></p>
+<h2 id="license">License</h2>
+<p>MIT &#xA9; <strong>@WXiaoming</strong></p>
+<p>built upon &#x2665;</p>
 
-	<span class="pl-c">// now ur able 2 do something with `comments`</span>
-});
-</code></pre>
-<h3 id="license">License</h3>
-<p>MIT</p>
-
+        </div>
+        <div class="footer-nav">
+          <div class="right"><a href="api.html"><span class="label">Next: </span><span class="title">API</span></a></div>
         </div>
       </div>
     </div>

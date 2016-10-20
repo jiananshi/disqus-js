@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="assets/style.css?t=d358ee59">
+    <link rel="stylesheet" href="style.css?t=5e8b9154">
+    <script src="assets/script.js?t=36f3d457"></script>
+    <title>API - Client</title>
+    <meta name="viewport" content="width=device-width">
+  </head>
+  <body class="-menu-visible">
+    <div class="doc-layout">
+      <div class="toggle menu-toggle js-menu-toggle"></div>
+      <div class="menu toc-menu">
+        <li class="menu-item -level-0 -parent">
+          <ul class="submenu">
+            <li class="menu-item -level-1"><a class="link title  link-index" href="index.html">Client</a>
+            </li>
+            <li class="menu-item -level-1"><a class="link title -active link-api" href="api.html">API</a>
+              <ul class="headings heading-list">
+                <li class="heading-item -depth-2"><a class="hlink link-init" href="#init">init</a>
+                </li>
+                <li class="heading-item -depth-2"><a class="hlink link-get-comments" href="#get-comments">get comments</a>
+                </li>
+                <li class="heading-item -depth-2"><a class="hlink link-get-recent-comments" href="#get-recent-comments">get recent comments</a>
+                </li>
+                <li class="heading-item -depth-2"><a class="hlink link-create-comment" href="#create-comment">create comment</a>
+                </li>
+              </ul>
+            </li>
+            <li class="menu-item -level-1"><a class="link title  link-example" href="example.html">EXAMPLE</a>
+            </li>
+          </ul>
+        </li>
+      </div>
+      <div class="body page-api">
+        <div class="header-nav">
+          <div class="right"><a class="iconlink" href="https://github.com/Disqus-proxy/disqus-proxy-client" data-title="Disqus-proxy/disqus-proxy-client">
+              <!-- span.title Open in GitHub--><span class="icon -github"></span></a>
+          </div>
+        </div>
+        <div class="markdown-body"><h1 id="">&#x5BFC;&#x822A;</h1>
+<ul>
+<li><a href="#init">&#x521D;&#x59CB;&#x5316;</a></li>
+<li><a href="#get-comments">&#x83B7;&#x53D6;&#x8BC4;&#x8BBA;</a></li>
+<li><a href="#get-recent-comments">&#x83B7;&#x53D6;&#x6700;&#x8FD1;&#x8BC4;&#x8BBA;</a></li>
+<li><a href="#create-comment">&#x521B;&#x5EFA;&#x8BC4;&#x8BBA;</a></li>
+</ul>
+<h2 id="init">init</h2>
+<p>initialze api url</p>
+<pre><code class="lang-javascript">Disqus.init({
+  <span class="hljs-attr">getComments</span>: <span class="pl-s">&apos;//yourdomain.com/api/comments&apos;</span>,
+  <span class="hljs-attr">getRecentComments</span>: <span class="pl-s">&apos;//yourdomain.com/api/comments?type=recent&apos;</span>,
+  <span class="hljs-attr">createComment</span>: <span class="pl-s">&apos;//yourdomain.com/api/comments&apos;</span>
+});
+</code></pre>
+<h2 id="get-comments">get comments</h2>
+<pre><code class="lang-javascript"><span class="pl-c">/**
+  * params: comments
+  * dataStructure: {
+  *   author: {},
+  *   createdAt: &apos;2016-10-19T00:50:16&apos;,
+  *   forum: &apos;yourdisqusforum&apos;,
+  *   id: &apos;897893279&apos;,
+  *   media: [],
+  *   message: &apos;&lt;p&gt;comment something&lt;/p&gt;&apos;,
+  *   raw_message: &apos;comment something&apos;
+  * }
+  *
+  */</span>
+Disqus.getComments(
+  <span class="pl-s">&apos;http://yourdomain.com/post-a&apos;</span>,
+  <span class="pl-c1">document</span>.querySelector(<span class="pl-s">&apos;#comments-container&apos;</span>)).then(<span class="hljs-function"><span class="hljs-params">comments</span> =&gt;</span> {
+
+  <span class="pl-c">// now ur able 2 do something with `comments`</span>
+});
+</code></pre>
+<h2 id="get-recent-comments">get recent comments</h2>
+<pre><code class="lang-javascript"><span class="pl-c">/**
+ * params: comments
+ * dataStructure: {
+ *   author: {},
+ *   createdAt: &apos;2016-10-19T00:50:16&apos;,
+ *   forum: &apos;yourdisqusforum&apos;,
+ *   id: &apos;897893279&apos;,
+ *   media: [],
+ *   message: &apos;&lt;p&gt;comment something&lt;/p&gt;&apos;,
+ *   raw_message: &apos;comment something&apos;
+ * }
+ *
+ */</span>
+Disqus.getRecentComments(
+  <span class="pl-s">&apos;http://yourdomain.com&apos;</span>,
+  <span class="pl-c1">document</span>.querySelector(<span class="pl-s">&apos;#recent-comments-container&apos;</span>)).then(<span class="hljs-function"><span class="hljs-params">comments</span> =&gt;</span> {
+
+  <span class="pl-c">// now ur able 2 do something with `comments`</span>
+});
+</code></pre>
+<h2 id="create-comment">create comment</h2>
+<pre><code class="lang-javascript"><span class="pl-c">/**
+ * params: { name, comment, email, parent(&#x53EF;&#x9009;) }
+ * 
+ */</span>
+Disqus.createComment({
+  name,
+  comment,
+  email,
+  parent
+}).then(<span class="hljs-function"><span class="hljs-params">comment</span> =&gt;</span> {});
+</code></pre>
+
+        </div>
+        <div class="footer-nav">
+          <div class="left"><a href="index.html"><span class="title">Client</span></a></div>
+          <div class="right"><a href="example.html"><span class="label">Next: </span><span class="title">EXAMPLE</span></a></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
