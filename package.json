@@ -4,13 +4,14 @@
   "description": "",
   "main": "./dist/app.js",
   "scripts": {
-    "install": "npm install",
-    "watch": "webpack -w --progress"
+    "install": "yarn install",
+    "dev": "webpack -w --progress",
+    "doc": "docpress b && cp -R _docpress/* ."
   },
   "author": "WXiaoming",
   "license": "MIT",
   "docpress": {
-    "github": "Disqus-proxy/disqus-proxy-client",
+    "github": "Disqus-proxy/client",
     "css": [
       "docs/style.css"
     ],
@@ -28,6 +29,7 @@
     "postcss-cssnext": "^2.7.0",
     "postcss-loader": "^0.10.0",
     "postcss-nested": "^1.0.0",
+    "pre-commit-eslint": "0.0.5",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.1"
   },
