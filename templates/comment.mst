@@ -4,13 +4,13 @@
   <img class="avatar" src="{{ author.avatar.cache }}" alt="avatar">
 
   <div class="content">
-    {{ #author.username }}
-    <span class="username">{{ author.username }}</span>
-    {{ /author.username }}
-
-    {{ ^author.username }}
+    {{ #author.name }}
     <span class="username">{{ author.name }}</span>
-    {{ /author.username }}
+    {{ /author.name }}
+
+    {{ ^author.name }}
+    <span class="username">{{ author.username }}</span>
+    {{ /author.name }}
 
     <span class="date">{{ dateFormatted }}</span>
     <p class="comment">{{{ raw_message }}}</p>

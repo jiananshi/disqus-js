@@ -1,13 +1,13 @@
 {{ #response }}
 
 <li class="disqus-recentcomment">
-  {{ #author.username }}
-  <span class="disqus-recentcomment-name">{{ author.username }}</span>
-  {{ /author.username }}
-
-  {{ ^author.username }}
+  {{ #author.name }}
   <span class="disqus-recentcomment-name">{{ author.name }}</span>
-  {{ /author.username }}
+  {{ /author.name }}
+
+  {{ ^author.name }}
+  <span class="disqus-recentcomment-name">{{ author.username }}</span>
+  {{ /author.name }}
 
   <span class="disqus-recentcomment-date">{{ dateFormatted }}</span>
 
