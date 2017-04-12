@@ -1,6 +1,33 @@
 'use strict';
 
+/* global Jinkela, req */
+
 const api = req.create({ baseUrl: '//xiaoming.io/disqus/' });
+
+(() => {
+  const $style = document.createElement('style');
+  $style.type = 'text/css';
+  $style.appendChild(document.createTextNode(`
+    @keyFrames busy {
+      0% {
+        content: '评论加载中.';
+      }
+      25% {
+        content: '评论加载中..';
+      }
+      50% {
+        content: '评论加载中...';
+      }
+      75% {
+        content: '评论加载中..';
+      }
+      100% {
+        content: '评论加载中.';
+      }
+    }
+  `));
+  document.head.appendChild($style);
+})();
 
 function sortComments(response) {
   response.reverse();
@@ -8,11 +35,11 @@ function sortComments(response) {
   let idMap = response.map(record => +record.id);
 
   // 子回复用数组存到父回复下
-  response.forEach(record => record.children = []);
+  response.forEach(record => { record.children = []; });
   response.forEach(record => {
     if (record.parent) {
       let parentIndex = idMap.indexOf(+record.parent);
-      response[parentIndex].children.push(record); 
+      response[parentIndex].children.push(record);
     }
   });
 
@@ -80,50 +107,16 @@ class DisqusHeader extends Jinkela {
   }
 }
 
-class DisqusActionsGroup extends Jinkela {
-  get template() {
-    return `
-      <nav>
-        <ul>
-          <li>
-            <svg class="icon-recommend" t="1491487174588" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4342" xmlns:xlink="http://www.w3.org/1999/xlink" width="19" height="19"><defs><style type="text/css"></style></defs><path d="M510.425643 860.642468 184.060551 535.283286c-4.145413-3.862981-109.671819-103.912651-109.671819-221.193775 0-141.872195 83.97046-226.568179 224.629014-226.568179 92.647073 0 180.303482 86.383416 211.407897 120.627335 31.104415-34.243919 118.761847-120.627335 211.407897-120.627335 140.65753 0 224.64334 84.695984 224.64334 226.568179 0 117.2801-105.541755 217.32977-110.042255 221.533512L510.425643 860.642468zM299.017746 117.840872c-72.571852 0-194.309474 25.493627-194.309474 196.248639 0 104.001679 99.412151 198.453864 100.419084 199.401446l305.298288 304.33638 304.957527-304.010969c1.347694-1.272993 100.775194-95.725178 100.775194-199.726857 0-170.756035-121.751948-196.248639-194.324824-196.248639-98.804307 0-198.630896 121.737622-199.63783 122.966613l-11.753695 14.507412-11.786441-14.507412C497.648642 239.578494 397.615345 117.840872 299.017746 117.840872z" p-id="4343" fill="#F05F70"></path></svg>
-            <span>推荐</span>
-          </li>
-          <li>
-            <svg t="1491487378974" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2394" xmlns:xlink="http://www.w3.org/1999/xlink" width="19" height="19"><defs><style type="text/css"></style></defs><path d="M809.654272 829.29664c0 10.187776-8.261632 18.450432-18.432 18.450432L144.950272 847.747072c-10.187776 0-18.432-8.261632-18.432-18.450432L126.518272 294.786048c0-10.187776 8.244224-18.432 18.432-18.432l166.211584 0 0-36.864L127.670272 239.490048c-20.358144 0-36.864 16.488448-36.864 36.864l0 571.392c0 20.358144 16.505856 36.845568 36.864 36.845568L808.502272 884.591616c20.358144 0 36.864-16.488448 36.864-36.845568l0-221.184-35.712 0L809.654272 829.29664zM932.864 250.451968l0.180224-0.342016-8.045568-4.391936-22.93248-13.78816-0.59392 0.954368-178.59584-97.487872-17.640448 33.030144 150.173696 81.036288c-229.896192 27.305984-407.501824 189.737984-407.501824 427.91424 0 11.052032 0.900096 21.869568 1.655808 32.7424l42.210304-0.018432c-0.864256-11.052032-1.691648-22.104064-1.691648-33.389568 0-218.73664 164.484096-363.780096 376.380416-387.03616l-89.730048 145.584128 31.806464 19.781632 105.929728-173.717504 0.971776 0.52224 13.121536-23.652352 4.608-7.560192L932.864 250.451968z" p-id="2395" fill="#656C7A"></path></svg>
-            <span>分享</span>
-          </li>
-        </ul>
-      </nav>
-    `;
+class DisqusForm extends Jinkela { // eslint-disable-line no-unused-vars
+  get value() {
+    return { name: this.name, email: this.email };
   }
-  get styleSheet() {
-    return `
-      :scope {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        font-size: 13px;
-        > ul {
-          padding: 12px 0;
-          > li {
-            display: inline-block;
-            width: 105px;
-            > svg { vertical-align: middle; }
-          }
-        }
-      }
-    `;
-  }
-}
-
-class DisqusForm extends Jinkela {
   get template() {
     return `
       <form>
         <p class="title">访客信息</p>
-        <input type="text" placeholder="姓名">
-        <input type="email" placeholder="邮箱" />
+        <input ref="name" type="text" placeholder="昵称">
+        <input ref="email" type="email" placeholder="邮箱" />
         <p class="notice">经过可爱的博主同意后你的留言就会出现在页面上了 (≧▽≦)</p>
       </form>
     `;
@@ -155,6 +148,7 @@ class DisqusForm extends Jinkela {
           height: 32px;
           width: 100%;
           margin-bottom: 12px;
+          &.error { border-color: #F55567; }
           &:focus {
             outline: none;
           }
@@ -170,15 +164,53 @@ class DisqusCurrentUser extends Jinkela {
     this.form.element.classList.add('show');
     this.textarea.style.height = '100px';
   }
+  setError(target) {
+    const { name, email } = this.form.value;
+    [this.textarea, name, email].forEach(el => el.classList.remove('error'));
+    if (target) target.classList.add('error');
+  }
+  onSubmit() {
+    const { name, email } = this.form.value;
+    switch (true) {
+      case !this.textarea.value || !this.textarea.value.trim():
+        this.errorMessage = '请填写评论内容';
+        this.setError(this.textarea);
+        return;
+      case !name.value || !name.value.trim():
+        this.errorMessage = '请填写昵称';
+        this.setError(name);
+        return;
+      case !/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email.value):
+        this.errorMessage = '邮箱格式非法';
+        this.setError(email);
+        return;
+    }
+    this.setError(null);
+    this.errorMessage = null;
+    const payload = {
+      name: name.value,
+      email: email.value,
+      comment: this.textarea.value
+    };
+    if (this.restarget) payload.parent = this.restarget;
+    api.post('comments', JSON.stringify(payload)).end()
+      .then(() => {
+        alert('评论发送成功，请耐心等候博主审核通过');
+      }, () => { this.errorMessage = '服务器抽风了，请稍后再重试 (>﹏<)'; });
+  }
   get template() {
     return `
       <section>
-        <div>
+        <div class="container">
           <img class="avatar" src="//oiw32lugp.qnssl.com/2017-04-12-giraffe.jpg">
           <div>
             <textarea ref="textarea" on-focus="{showActions}" placeholder="我想对博主说... (///▽///)"></textarea>
+            <div if="{errorMessage}" ref="error" class="errormsg">
+              <svg t="1492008694441" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2395" xmlns:xlink="http://www.w3.org/1999/xlink" width="19" height="19"><defs><style type="text/css"></style></defs><path d="M152.040788 895.149377c-31.53932-0.007163-63.390749-0.919952-81.033571-33.3035-17.146519-31.472805-4.296863-60.225663 11.933797-87.453794 117.941156-197.847044 235.969293-395.639852 354.317725-593.239256 41.621956-69.489654 120.338762-69.883627 161.352875-0.301875C713.660906 376.013863 828.467675 571.328223 941.752788 767.510348c12.18553 21.096481 17.924231 48.070832 19.281135 72.722278 1.762133 32.110325-21.809725 53.420677-54.162574 54.4491L152.040788 895.149377zM569.051367 457.17637c0-37.759999 0.522909-75.530231-0.159636-113.275903-0.584308-32.528857-26.465768-57.789171-57.515948-57.668421-30.520107 0.12075-54.547337 24.502044-54.723346 57.169047-0.397043 74.010621-0.402159 148.025335 0 222.030839 0.185218 33.542954 24.841781 58.651818 56.035224 58.667168 31.740912 0.017396 55.780421-24.312732 56.276724-58.171887C569.496505 529.683754 569.085136 493.426992 569.051367 457.17637M567.282071 731.36615c0.252757-31.596625-23.641443-55.468312-55.493895-55.432497-31.888268 0.029676-55.967686 23.829731-55.881728 55.212486 0.089028 31.16786 24.63712 55.892985 55.619762 56.027038C542.378891 787.303136 567.029314 762.629177 567.282071 731.36615" p-id="2396" fill="#ffffff"></path></svg>
+              <span>{errorMessage}</span>
+            </div>
             <footer ref="footer">
-              <button>发表评论</button>
+              <button on-click="{onSubmit}">发表评论</button>
             </footer>
           </div>
         </div>
@@ -191,7 +223,7 @@ class DisqusCurrentUser extends Jinkela {
       :scope {
         margin-bottom: 24px;
         overflow: auto;
-        > div {
+        > .container {
           display: flex;
           > .avatar {
             width: 48px;
@@ -218,7 +250,17 @@ class DisqusCurrentUser extends Jinkela {
               line-height: 1.4;
               word-break: break-word;
               font-size: 14px;
+              &.error { border-color: #F55567; }
               &:focus { outline: none; }
+            }
+            > .errormsg {
+              > svg { vertical-align: middle; }
+              margin-bottom: 5px;
+              background-color: #F55567;
+              padding: 10px 15px;
+              color: #fff;
+              font-weight: 300;
+              font-size: 13px;
             }
             > footer {
               box-sizing: border-box;
@@ -259,7 +301,9 @@ class DisqusCurrentUser extends Jinkela {
 
 class DisqusComment extends Jinkela {
   init() {
-    if (this.isResponse) this.element.style.marginLeft = '48px';
+    if (this.isResponse) {
+      this.element.style.marginLeft = '48px';
+    }
   }
   toggleRespond() {
     this.isResponsing = !this.isResponsing;
@@ -278,14 +322,16 @@ class DisqusComment extends Jinkela {
           <footer>
             <ul>
               <li>
-                <a 
+                <a
                   ref="respond"
                   on-click="{toggleRespond}"
-                  class="respond" 
+                  class="respond"
                   href="Javascript:;">回复</a>
               </li>
               <li>
-                <jkl-disqus-current-user if="{isResponsing}"></jkl-disqus-current-user>
+                <jkl-disqus-current-user
+                  restarget="{resTarget}"
+                  if="{isResponsing}"></jkl-disqus-current-user>
               </li>
             </ul>
           </footer>
@@ -332,7 +378,6 @@ class DisqusComment extends Jinkela {
                 color: #656c7a;
                 text-decoration: none;
                 display: inline-block;
-                margin: 10px 0;
                 &.active { color: #2e9fff; }
               }
             }
@@ -354,14 +399,13 @@ class DisqusCommentList extends Jinkela {
         comment: comment.raw_message,
         avatar: /noavatar/.test(cache) ? '//oiw32lugp.qnssl.com/2017-04-12-giraffe.jpg' : cache,
         date: date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日',
-        isResponse: !!comment.parent
+        isResponse: !!comment.parent,
+        resTarget: comment.parent
       }).to(this);
     });
   }
   get tagName() { return 'ul'; }
 }
-
-class DisqusRecommend extends Jinkela {}
 
 class DisqusFooter extends Jinkela {
   get template() {
@@ -370,11 +414,11 @@ class DisqusFooter extends Jinkela {
         <ul>
           <li>
             <svg t="1491636886122" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2374" xmlns:xlink="http://www.w3.org/1999/xlink" width="19" height="19"><defs><style type="text/css"></style></defs><path d="M128 268l0 512 768 0 0-512-768 0zM512 547.8l-325.6-247.8 651.2 0-325.6 247.8zM160 748l0-427.8 230.2 175.2-136.2 154.6 4 4 157.8-139.2 96.2 73.2 96.2-73.2 157.8 139.2 4-4-136.2-154.8 230.2-175 0 427.8-704 0z" p-id="2375" fill="#656C7A"></path></svg>
-            <a href="Javascript:;">订阅</a>
+            <a href="//yemengying.com/atom.xml" target="_blank">订阅</a>
           </li>
           <li>
-            <svg t="1491636953459" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2646" xmlns:xlink="http://www.w3.org/1999/xlink" width="19" height="19"><defs><style type="text/css"></style></defs><path d="M530.688 1009.28a489.024 489.024 0 0 1-318.976-118.016L0 920.192l81.792-201.92A498.752 498.752 0 0 1 37.312 512c0-274.56 220.8-497.28 493.44-497.28C803.072 14.72 1024 237.44 1024 512c0 274.688-220.8 497.28-493.312 497.28z m269.44-498.688v-1.408c0-143.488-101.248-245.76-275.712-245.76H336v497.28h185.6c175.808 0 278.4-106.624 278.4-250.112zM526.4 638.464h-55.04v-252.8h55.04c80.96 0 134.72 46.08 134.72 125.696v1.28c0 80.384-53.76 125.824-134.656 125.824z" fill="" p-id="2647"></path></svg>
-            <a href="Javascript:;">在您的网站上使用 DISQUS.JS</a>
+            <svg t="1492009091417" class="icon" style="" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2394" xmlns:xlink="http://www.w3.org/1999/xlink" width="19" height="19"><defs><style type="text/css"></style></defs><path d="M941.714 512q0 143.433-83.712 258.011t-216.283 158.574q-15.433 2.853-22.565-3.986t-7.131-17.152v-120.576q0-55.442-29.696-81.152 32.585-3.438 58.587-10.277t53.723-22.272 46.299-37.998 30.281-60.014 11.703-86.016q0-69.157-45.129-117.723 21.138-52.005-4.571-116.553-16.018-5.157-46.299 6.29t-52.553 25.161l-21.723 13.714q-53.138-14.848-109.714-14.848t-109.714 14.848q-9.143-6.29-24.283-15.433t-47.726-22.016-49.152-7.717q-25.161 64.585-3.986 116.553-45.129 48.567-45.129 117.723 0 48.567 11.703 85.723t29.989 60.014 46.007 38.29 53.723 22.272 58.587 10.277q-22.857 20.553-28.014 58.843-11.995 5.705-25.71 8.558t-32.585 2.853-37.413-12.288-31.707-35.73q-10.862-18.286-27.721-29.696t-28.27-13.714l-11.447-1.719q-11.995 0-16.567 2.56t-2.853 6.583 5.157 8.009 7.424 6.839l3.986 2.853q12.581 5.705 24.869 21.723t17.993 29.147l5.705 13.129q7.424 21.723 25.161 35.145t38.29 17.152 39.717 3.986 31.707-2.011l13.129-2.304q0 21.723 0.293 50.871t0.293 30.866q0 10.277-7.424 17.152t-22.857 3.986q-132.571-43.995-216.283-158.574t-83.712-258.011q0-119.442 58.843-220.27t159.707-159.707 220.27-58.843 220.27 58.843 159.707 159.707 58.843 220.27z" p-id="2395" fill="#656C7A"></path></svg>
+            <a href="//github.com/giraffe0813" target="_blank">github</a>
           </li>
         </ul>
         <span>DISQUS.JS</span>
@@ -400,7 +444,6 @@ class DisqusFooter extends Jinkela {
             > svg { vertical-align: middle; }
             > a {
               color: #494e58;
-              line-height: 1.1;
               text-decoration: none;
               display: inline-block;
               vertical-align: middle;
@@ -414,6 +457,7 @@ class DisqusFooter extends Jinkela {
 
 class Main extends Jinkela {
   init() {
+    this.loading = true;
     api.get('comments', {
       query: {
         url: 'http://yemengying.com/message/'
@@ -424,13 +468,14 @@ class Main extends Jinkela {
       new DisqusCurrentUser().to(this);
       new DisqusCommentList({ data: sortComments(response) }).to(this);
       new DisqusFooter().to(this);
-    });
+    }, () => { this.internalError = true; })
+    .then(() => { this.loading = false; });
   }
   get template() {
     return `
       <div>
-        <p id="loading">评论加载中，请稍后...</p>
-        <p>服务器开小差了，评论加载失败，请稍后再重试 (>﹏<)</p>
+        <p if="{loading}" class="loading"></p>
+        <p if="{internalError}" class="error">服务器开小差了，评论加载失败，请稍后再重试 (>﹏<)</p>
       </div>
     `;
   }
@@ -446,6 +491,17 @@ class Main extends Jinkela {
           list-style: none;
           margin: 0;
           padding: 0;
+        }
+        > .loading::after {
+          content: '';
+          opacity: .5;
+          font-weight: 300;
+          animation: busy 1s linear infinite;
+          font-size: 20px;
+        }
+        > .loading, .errormsg {
+          text-align: center;
+          padding: 15px 0;
         }
       }
     `;
