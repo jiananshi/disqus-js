@@ -1,0 +1,22 @@
+{
+  "name": "disqusjs",
+  "version": "2.0.0-beta",
+  "description": "disqus client sdk",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiananshi/DisqusJS.git"
+  },
+  "keywords": [
+    "disqus"
+  ],
+  "author": "jiananshi <klamtine@gmail.com> (https://shijianan.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jiananshi/DisqusJS/issues"
+  },
+  "homepage": "https://github.com/jiananshi/DisqusJS#readme"
+}
