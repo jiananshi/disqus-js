@@ -1,1 +1,0 @@
-../XRequest/dist/req.js

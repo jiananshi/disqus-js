@@ -1,5 +1,10 @@
 `Disqusjs` 通过间接调用 [disqus-api](https://api.disqus.com) 实现了前端评论的展示和提交等功能
 
+### Dependencies
+
+- [Jinkela](https://github.com/YanagiEiichi/jinkela)
+- [req](https://github.com/jiananshi/req)
+
 **1. Why this poject**
 
 去年（2016）的时候 Disqus 在国内被墙，通过一台 PING 的通的墙外机器「曲线救国」。
