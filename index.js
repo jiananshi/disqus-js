@@ -563,10 +563,13 @@
   }
 
   exports.DisqusJS = {
-    init(dom = document.body) {
-      const Disqus = new Main().to(dom);
-      this.getRecentComments = Disqus.getRecentComments.bind(Disqus);
-      this.getArticleComments = Disqus.getArticleComments.bind(Disqus);
+    getRecentComments(dom = document.body) {
+      this.Disqus = this.Disqus || new Main().to(dom);
+      this.Disqus.getRecentComments();
+    },
+    getArticleComments(dom = document.body, url) {
+      this.Disqus = this.Disqus || new Main().to(dom);
+      this.Disqus.getArticleComments(url);
     }
   };
 })(window);
