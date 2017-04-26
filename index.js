@@ -7,25 +7,14 @@
   $style.type = 'text/css';
   $style.appendChild(document.createTextNode(`
     @keyFrames busy {
-      0% {
-        content: '评论加载中.';
-      }
-      25% {
-        content: '评论加载中..';
-      }
-      50% {
-        content: '评论加载中...';
-      }
-      75% {
-        content: '评论加载中..';
-      }
-      100% {
-        content: '评论加载中.';
-      }
+      0% { content: '评论加载中.'; }
+      25% { content: '评论加载中..'; }
+      50% { content: '评论加载中...'; }
+      75% { content: '评论加载中..'; }
+      100% { content: '评论加载中.'; }
     }
   `));
   document.head.appendChild($style);
-
   function sortComments(response) {
     response.reverse();
     let idMap = response.map(record => +record.id);
@@ -41,9 +30,7 @@
       return list
         .reduce((prev, current) => {
           prev.push(current);
-          if (current.children.length) {
-            prev.push.apply(prev, flatten(current.children));
-          }
+          if (current.children.length) prev.push.apply(prev, flatten(current.children));
           return prev;
         }, []);
     }
@@ -140,9 +127,7 @@
             width: 100%;
             margin-bottom: 12px;
             &.error { border-color: #F55567; }
-            &:focus {
-              outline: none;
-            }
+            &:focus { outline: none; }
           }
         }
       `;
@@ -185,10 +170,13 @@
         comment: this.textarea.value
       };
       if (this.restarget) payload.parent = this.restarget;
-      api.post('comments', JSON.stringify(payload)).end()
+      this.button.setAttribute('disabled', 'disabled');
+      api.post('comment', JSON.stringify(payload)).end()
         .then(() => {
           alert('评论发送成功，请耐心等候博主审核通过');
-        }, () => { this.errorMessage = '服务器抽风了，请稍后再重试 (>﹏<)'; });
+          this.textarea.value = '';
+        }, () => { this.errorMessage = '服务器抽风了，请稍后再重试 (>﹏<)'; })
+        .then(() => { this.button.removeAttribute('disabled'); });
     }
     get template() {
       return `
@@ -202,7 +190,7 @@
                 <span>{errorMessage}</span>
               </div>
               <footer ref="footer">
-                <button on-click="{onSubmit}">发表评论</button>
+                <button ref="button" on-click="{onSubmit}">发表评论</button>
               </footer>
             </div>
           </div>
@@ -282,6 +270,10 @@
                   cursor: pointer;
                   outline: none;
                   &:hover { background-color: rgba(29,47,58,.7); }
+                  &:disabled {
+                    opacity: .6;
+                    cursor: not-allowed;
+                  }
                 }
               }
             }
@@ -294,9 +286,7 @@
   class DisqusComment extends Jinkela {
     get DisqusCurrentUser() { return DisqusCurrentUser; }
     init() {
-      if (this.isResponse) {
-        this.element.style.marginLeft = '48px';
-      }
+      if (this.isResponse) this.element.style.marginLeft = '48px';
     }
     toggleRespond() {
       this.isResponsing = !this.isResponsing;
@@ -321,7 +311,7 @@
                     class="respond"
                     href="Javascript:;">回复</a>
                 </li>
-                <li>
+                <li class="responseform">
                   <jkl-disqus-current-user
                     restarget="{resTarget}"
                     if="{isResponsing}"></jkl-disqus-current-user>
@@ -345,6 +335,7 @@
             margin-right: 10px;
             border-radius: 3px;
           }
+          .responseform { margin-top: 15px; }
           .date {
             color: #656c7a;
             font-weight: 300;
@@ -468,15 +459,19 @@
       return `
         :scope {
           overflow: auto;
-          display: flex;
           margin-bottom: 10px;
           font-size: 13px;
           > .avatar {
+            float: left;
             width: 42px;
             height: 42px;
             margin-right: 15px;
             flex-shrink: 0;
             border-radius: 4px;
+          }
+          > div {
+            float: left;
+            width: 70%;
           }
           .author {
             color: #EE6172;
@@ -495,10 +490,29 @@
     }
   }
 
+  class Loading extends Jinkela {
+    get template() { return '<p></p>'; }
+    get styleSheet() {
+      return `
+        :scope {
+          &::after {
+            content: '';
+            opacity: .5;
+            font-weight: 300;
+            animation: busy 1s linear infinite;
+            font-size: 20px;
+          }
+          text-align: center;
+          padding: 15px 0;
+        }
+      `;
+    }
+  };
+
   class Main extends Jinkela {
     getArticleComments(url) {
       let options = {};
-      this.loading = true;
+      const loading = new Loading().to(this);
       if (url && url.trim()) options = { query: { url } };
       api.get('comments', options).end().then(response => {
         response = JSON.parse(response).response;
@@ -507,9 +521,10 @@
         new DisqusCommentList({ data: sortComments(response) }).to(this);
         new DisqusFooter().to(this);
       }, () => { this.internalError = true; })
-        .then(() => { this.loading = false; });
+        .then(() => { loading.element.parentNode.removeChild(loading.element); });
     }
     getRecentComments(dom = document.body) {
+      const loading = new Loading().to(dom);
       api.get('comments/recent').end().then(response => {
         response = JSON.parse(response).response;
         response.forEach(comment => {
@@ -523,7 +538,7 @@
             url: comment.url
           }).to(dom);
         });
-      });
+      }, () => {}).then(() => { loading.element.parentNode.removeChild(loading.element); });
     }
     get template() {
       return `
@@ -546,14 +561,7 @@
             margin: 0;
             padding: 0;
           }
-          > .loading::after {
-            content: '';
-            opacity: .5;
-            font-weight: 300;
-            animation: busy 1s linear infinite;
-            font-size: 20px;
-          }
-          > .loading, .errormsg {
+          > .errormsg {
             text-align: center;
             padding: 15px 0;
           }
@@ -561,15 +569,25 @@
       `;
     }
   }
-
+  const main = new Main();
   exports.DisqusJS = {
-    getRecentComments(dom = document.body) {
-      this.Disqus = this.Disqus || new Main().to(dom);
-      this.Disqus.getRecentComments();
-    },
-    getArticleComments(dom = document.body, url) {
-      this.Disqus = this.Disqus || new Main().to(dom);
-      this.Disqus.getArticleComments(url);
+    getRecentComments(dom = document.body) { main.getRecentComments(dom); },
+    getArticleComments(url = location.href) {
+      new Promise((resolve, reject) => {
+        let done = false;
+        const $dsq = document.createElement('script');
+        $dsq.src = '//giraffe0813new.disqus.com/embed.js';
+        $dsq.onload = () => {
+          done = true;
+          reject();
+        };
+        document.head.appendChild($dsq);
+        setTimeout(() => { if (!done) resolve(); }, 2000);
+      }).then(() => {
+        main.to(document.querySelector('#disqus_thread') || document.body);
+        main.getArticleComments(url);
+      }).catch(() => {});
     }
   };
 })(window);
+

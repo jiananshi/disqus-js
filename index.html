@@ -10,11 +10,10 @@
 </head>
 <body>
   <ul id="recent" style="list-style: none;"></ul>
+  <div id="disqus_thread"></div>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      DisqusJS.init();
-      DisqusJS.getArticleComments('http://yemengying.com/2017/01/30/how-does-rabbitmq-handle-exception/');
-    });
+    DisqusJS.getArticleComments('http://yemengying.com/2017/03/17/difference-between-executor-executorService/');
+    DisqusJS.getRecentComments(document.querySelector('#recent'));
   </script>
 </body>
 </html>
