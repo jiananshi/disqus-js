@@ -511,6 +511,8 @@
 
   class Main extends Jinkela {
     getArticleComments(url) {
+      // is home page
+      if (location.pathname === '/') return;
       let options = {};
       const loading = new Loading().to(this);
       if (url && url.trim()) options = { query: { url } };
@@ -574,6 +576,7 @@
     getRecentComments(dom = document.body) { main.getRecentComments(dom); },
     getArticleComments(url = location.href) {
       new Promise((resolve, reject) => {
+        if (~['/about/', '/message/', '/friends/', 'reading'].indexOf(location.pathname)) window.disqus_url = location.origin + location.pathname + 'index.html';
         let done = false;
         const $dsq = document.createElement('script');
         $dsq.src = '//giraffe0813new.disqus.com/embed.js';
