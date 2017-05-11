@@ -381,7 +381,7 @@
         new DisqusComment({
           author: comment.author.name,
           comment: comment.raw_message,
-          avatar: /noavatar/.test(cache) ? '//oiw32lugp.qnssl.com/2017-04-12-giraffe.jpg' : cache,
+          avatar: cache,
           date: date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日',
           isResponse: !!comment.parent,
           resTarget: comment.parent
