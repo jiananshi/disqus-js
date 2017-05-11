@@ -534,7 +534,7 @@
           const date = new Date(comment.createdAt);
           new RecentComment({
             name: comment.author.name,
-            avatar: /noavatar/.test(cache) ? '//oiw32lugp.qnssl.com/2017-04-12-giraffe.jpg' : cache,
+            avatar: cache,
             comment: comment.raw_message,
             date: date.getFullYear() + '年' + (date.getMonth() + 1) + '月' + date.getDate() + '日',
             url: comment.url
