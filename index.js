@@ -578,6 +578,9 @@
       new Promise((resolve, reject) => {
         if (~['/about/', '/message/', '/friends/', 'reading'].indexOf(location.pathname)) window.disqus_url = location.origin + location.pathname + 'index.html';
         let done = false;
+        window.disqus_config = function() {
+          this.page.url = location.href.replace(/^https?/, 'http');
+        };
         const $dsq = document.createElement('script');
         $dsq.src = '//giraffe0813new.disqus.com/embed.js';
         $dsq.onload = () => {
