@@ -1,5 +1,3 @@
-'use strict';
-
 import Vue from 'vue';
 
 class RequiredParamsError extends Error {
@@ -11,26 +9,26 @@ class RequiredParamsError extends Error {
 }
 
 class DisqusJS {
-  constructor({ el, blogName, apiURL }) {
-    if (!blogName) throw new RequiredParamsError('blogName 不能为空');
+  constructor({ el, apiURL }) {
     if (!apiURL) throw new RequiredParamsError('apiURL 不能为空');
-
-    document.addEventListener('DOMContentLoaded', () => {
+    function r() {
       new Vue({
         el: el || document.querySelector('#disqus_thread'),
         render(h) {
           return h(require('./index.vue').default, {
             props: {
-              apiURL,
-              blogName
+              apiURL
             }
           });
         }
       });
-    });
+    }
+    document.readyState === 'loading' 
+      ? document.addEventListener('DOMContentLoaded', r)
+      : r();
   }
 }
 
 window.DisqusJS = DisqusJS;
 
-new DisqusJS({ blogName: 'giraffe0813', apiURL: '//shijianan.com/disqus' });
+new DisqusJS({ apiURL: '//shijianan.com/disqus' });

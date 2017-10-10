@@ -13,7 +13,7 @@ module.exports = {
     hot: true,
     hotOnly: true,
     historyApiFallback: {
-      disableDotRule: true,
+      disableDotRule: true
     },
     overlay: true
   },
