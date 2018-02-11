@@ -2,7 +2,7 @@
 
 /* global Jinkela, req */
 (exports => {
-  const api = req.create({ baseUrl: '//shijianan.com/disqus/' });
+  const api = req.create({ baseUrl: '//yemengying.com/disqus/' });
   const $style = document.createElement('style');
   $style.type = 'text/css';
   $style.appendChild(document.createTextNode(`
