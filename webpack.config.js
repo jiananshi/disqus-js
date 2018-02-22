@@ -19,7 +19,7 @@ module.exports = {
   },
   entry: {
     app: [
-      './index'
+      './src/index'
     ]
   },
   output: {

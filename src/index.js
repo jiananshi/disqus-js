@@ -1,3 +1,5 @@
+import 'normalize.css';
+import './global.css';
 import Vue from 'vue';
 
 class RequiredParamsError extends Error {
@@ -12,7 +14,7 @@ class DisqusJS {
   constructor({ el, apiURL }) {
     if (!apiURL) throw new RequiredParamsError('apiURL 不能为空');
     function r() {
-      new Vue({
+      return new Vue({
         el: el || document.querySelector('#disqus_thread'),
         render(h) {
           return h(require('./index.vue').default, {
@@ -23,7 +25,7 @@ class DisqusJS {
         }
       });
     }
-    document.readyState === 'loading' 
+    document.readyState === 'loading'
       ? document.addEventListener('DOMContentLoaded', r)
       : r();
   }
@@ -31,4 +33,4 @@ class DisqusJS {
 
 window.DisqusJS = DisqusJS;
 
-new DisqusJS({ apiURL: '//shijianan.com/disqus' });
+new DisqusJS({ apiURL: '//yemengying.com/disqus' }); // eslint-disable-line

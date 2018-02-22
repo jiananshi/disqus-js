@@ -4,7 +4,7 @@
   "description": "disqus client sdk",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dashboard -- webpack-dev-server -w"
+    "dev": "webpack-dev-server -w"
   },
   "repository": {
     "type": "git",
