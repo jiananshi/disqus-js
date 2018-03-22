@@ -22,6 +22,9 @@ module.exports = {
       './src/index'
     ]
   },
+  resolve: {
+    extensions: ['.js', '.vue', '.css']
+  },
   output: {
     path: PATH_DIST,
     filename: '[name].js',

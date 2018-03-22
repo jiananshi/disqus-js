@@ -7,61 +7,44 @@
       <div class="currentuser__comment">
         <div class="currentuser__comment-avatar"></div>
         <div class="currentuser__comment-action">
-          <textarea 
+          <textarea
             v-model="form.comment"
             @blur="formValidate('comment')"
             @focus="onCommentTextareaFocus"
-            ref="textarea" 
+            ref="textarea"
             placeholder="加入讨论..."></textarea>
         </div>
       </div>
-      <form class="currentuser__form">
-        <p class="currentuser__form-title">访客信息</p>
-        <div>
-          <input 
+      <transition name="slide-in-down">
+        <form v-if="commentHasFocused" class="currentuser__form">
+          <p class="currentuser__form-title">访客信息</p>
+          <div>
+            <input
             ref="name"
             @blur="formValidate('name')"
-            v-model="form.name" 
-            type="text" 
+            v-model="form.name"
+            type="text"
             placeholder="昵称" />
-          <input 
+            <input
             ref="email"
             @blur="formValidate('email')"
-            v-model="form.email" 
-            type="email" 
+            v-model="form.email"
+            type="email"
             placeholder="邮箱" />
-        </div>
-        <button type="button" :disabled="!isFormValid">发表评论</button>
-      </form>
+          </div>
+          <button type="button" :disabled="!isFormValid">发表评论</button>
+        </form>
+      </transition>
     </div>
-    <ul v-if="isLoading" class="comments-shell">
-      <li
-        v-for="n in 5"
-        class="comments-shell__item">
-        <div class="comments-shell__avatar"></div>
-        <ul class="comments-shell__content">
-          <li class="comments-shell__content-item"></li>
-          <li class="comments-shell__content-item"></li>
-          <li class="comments-shell__content-item"></li>
-        </ul>
-      </li>
-    </ul>
-    <ul class="comments-container">
-      <li class="comment" v-for="comment in comments">
-        <img :src="comment.author.avatar.cache" alt="avatar" class="avatar">
-        <div>
-          <header>
-            <span>{{ comment.author.name }}</span>
-            <span>{{ timeago(comment.createdAt) }}</span>
-          </header>
-          <p>{{ comment.raw_message }}</p>
-        </div>
-      </li>
-    </ul>
+    <app-shell />
+    <comments-list :comments="comments" />
   </div>
 </template>
 
 <script>
+  import AppShell from './app-shell';
+  import CommentsList from './comments-list';
+
   const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
   export default {
     props: {
@@ -78,9 +61,10 @@
         isLoading: false,
         comments: [],
         isFormValid: false,
+        commentHasFocused: false,
         form: {
           comment: '',
-          name: '', 
+          name: '',
           email: ''
         }
       };
@@ -98,20 +82,10 @@
       }
     },
     methods: {
-      timeago(createdAt) {
-        const gap = Date.now() - Date.parse(createdAt);
-        switch (true) {
-          case gap < 6E4: return '刚刚';
-          case gap < 36E5: return Math.round(gap / 6E4) + ' 分钟前';
-          case gap < 864E5: return Math.round(gap / 36E5) + ' 小时前';
-          case gap < 2592E6: return Math.round(gap / 864E5) + ' 天前';
-          case gap < 31536E6: return Math.round(gap / 2592E6) + ' 个月前';
-          case gap >= 31536E6: return Math.round(gap / 31536E6) + ' 年前';
-        }
-      },
       onCommentTextareaFocus() {
         const { textarea } = this.$refs;
-        if (!textarea.classList.contains('focus')) textarea.classList.add('focus');
+        if (textarea.classList.contains('invalid')) textarea.classList.remove('invalid');
+        this.commentHasFocused = true;
       },
       formValidate(type) {
         switch (type) {
@@ -119,34 +93,40 @@
           case 'name':
             const field = this.form[type];
             const el = this.$refs[({ comment: 'textarea', name: 'name' })[type]]
-            if (!field || !field.trim()) return el.classList.add('invalid')  
+            if (!field || !field.trim()) return el.classList.add('invalid')
             if (el.classList.contains('invalid')) el.classList.remove('invalid')
             break;
           case 'email':
             const { email } = this.form;
             const element = this.$refs.email;
-            if (!email || !email.trim() || !emailReg.test(email)) return element.classList.add('invalid')  
+            if (!email || !email.trim() || !emailReg.test(email)) return element.classList.add('invalid')
             if (element.classList.contains('invalid')) element.classList.remove('invalid')
             break;
         }
       }
     },
     components: {
+      AppShell,
+      CommentsList,
     }
   };
 </script>
 
 <style>
-  @keyframes shellPulse {
-    0% {
+  @keyframes slide-in-down {
+    from {
+      transform: translate3d(0, -100%, 0);
+      opacity: 0;
+    }
+    to {
+      transform: translateZ(0);
       opacity: 1;
     }
-    50% {
-      opacity: .6;
-    }
-    100% {
-      opacity: 1;
-    }
+  }
+
+  .slide-in-down-enter-active {
+    animation: slide-in-down 1s ease;
+    transition: all .5s ease;
   }
 
   .header {
@@ -168,7 +148,7 @@
     margin-bottom: -1px;
     > span {
       color: #000;
-      font-size: 1.2em; 
+      font-size: 1.2em;
       font-weight: bold;
     }
   }
@@ -194,7 +174,7 @@
   }
 
   .currentuser__comment-action {
-    width: 100%; 
+    width: 100%;
     > textarea {
       box-sizing: border-box;
       height: 48px;
@@ -209,18 +189,19 @@
       word-break: break-word;
       font-size: 14px;
       outline: none;
-      transition: min-height .15s ease-in-out;
-      &.focus {
+      transition: all 10s ease-in-out;
+      &:focus {
+        border-color: #ABCEFB;
         min-height: 73px;
       }
       &.invalid {
-        border-color: #EE6072;  
+        border-color: #E67470;
       }
     }
   }
 
   .currentuser__form {
-    margin-top: 20px; 
+    margin-top: 20px;
     margin-left: 58px;
     input {
       margin-bottom: 10px;
@@ -229,12 +210,12 @@
       width: 40%;
       padding: 5px 9px;
       border-radius: 4px;
-      border: 2px solid #dbdfe4; 
+      border: 2px solid #dbdfe4;
       &:focus {
-        border-color: #c2c6cc; 
-      } 
+        border-color: #c2c6cc;
+      }
       &.invalid {
-        border-color: #EE6072;  
+        border-color: #E67470;
       }
     }
     button {
@@ -249,110 +230,22 @@
       margin-top: 5px;
       &:disabled {
         background-color: #778289;
-        opacity: .6; 
+        opacity: .6;
         cursor: not-allowed;
         &:hover {
-          opacity: .6;   
+          opacity: .6;
         }
       }
       &:hover {
-        opacity: .9; 
+        opacity: .9;
       }
     }
   }
-
   .currentuser__form-title {
     font-weight: bold;
     color: #687a86;
     font-size: 1.1em;
     margin-bottom: 10px;
-  }
-
-  .disqusjs {
-    .comments-container {
-      .comment {
-        display: flex;
-        align-items: top;
-        padding: 0 15px;
-        margin-bottom: 24px;
-        > .avatar {
-          flex-shrink: 0;
-          width: 48px;
-          height: 48px;
-          margin-right: 10px;
-          border-radius: 3px;
-        }
-        .responseform { margin-top: 15px; }
-        .date {
-          color: #656c7a;
-          font-weight: 300;
-          font-size: 12px;
-        }
-        .author {
-          color: rgb(42, 146, 189);
-          font-weight: 700;
-          margin-right: 5px;
-        }
-        .comment {
-          font-weight: 400;
-          margin: 0;
-          margin-top: 10px;
-          color: #2a2e2e;
-          margin-bottom: 5px;
-          display: inline-block;
-        }
-        footer {
-          > ul {
-            > li {
-              display: block;
-              font-size: 13px;
-              > a {
-                color: #656c7a;
-                text-decoration: none;
-                display: inline-block;
-                &.active { color: #2e9fff; }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  .comments-shell {
-    .comments-shell__item {
-      display: flex;
-      padding: 0 15px;
-      margin-bottom: 24px;
-    }
-    .comments-shell__avatar {
-      border-radius: 3px;
-      background-color: #F8F8F8;
-      display: inline-block;
-      width: 48px;
-      height: 48px;
-      flex-shrink: 0;
-      margin-right: 10px;
-    }
-    .comments-shell__content {
-      list-style: none;
-      width: 100%;
-      .comments-shell__content-item {
-        animation: shellPulse 1s infinite;
-        background-color: #F8F8F8;
-        display: block;
-        margin-bottom: 5px;
-        height: 13px;
-        &:first-child {
-          width: 50%;
-        }
-        &:nth-child(2) {
-          width: 40%;
-        }
-        &:last-child {
-          width: 20%;
-        }
-      }
-    }
   }
 </style>
 
