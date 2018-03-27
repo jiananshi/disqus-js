@@ -36,14 +36,21 @@
         </form>
       </transition>
     </div>
-    <app-shell />
-    <comments-list :comments="comments" />
+    <transition name="fade-out">
+      <app-shell v-if="isLoading" />
+    </transition>
+    <transition name="fade-in">
+      <comments-list
+        v-if="!isLoading"
+        :comments="comments" />
+    </transition>
   </div>
 </template>
 
 <script>
-  import AppShell from './app-shell';
-  import CommentsList from './comments-list';
+  import AppShell from './components/app-shell';
+  import CommentsList from './components/comments-list';
+  import sortComments from './sort-comments';
 
   const emailReg = /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
   export default {
@@ -54,11 +61,19 @@
       this.isLoading = true;
       fetch(`${this.apiURL}/comments?url=https://yemengying.com/2017/09/04/oracle-foreignkey-lock/`)
         .then(res => res.json())
-        .then(comments => { this.comments = comments.response; })
+        .then(comments => {
+          console.log(sortComments(comments.response))
+          this.comments = sortComments(comments.response);
+          this.isLoading = false;
+        })
+        .catch(e => {
+          this.isLoading = false;
+          return Promise.reject(e);
+        })
     },
     data() {
       return {
-        isLoading: false,
+        isLoading: true,
         comments: [],
         isFormValid: false,
         commentHasFocused: false,
@@ -124,14 +139,43 @@
     }
   }
 
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      position: absolute;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+  }
+
   .slide-in-down-enter-active {
     animation: slide-in-down 1s ease;
     transition: all .5s ease;
   }
 
+  .fade-in-enter-active {
+    animation: fade-in 1s ease;
+    transition: opacity .5s ease;
+  }
+
+  .fade-out-leave-active {
+    animation: fade-out 1s ease;
+    transition: opacity .5s ease;
+  }
+
   .header {
     border-bottom: 2px solid #e7e9ee;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .header__count {
@@ -203,6 +247,7 @@
   .currentuser__form {
     margin-top: 20px;
     margin-left: 58px;
+    padding-bottom: 4px;
     input {
       margin-bottom: 10px;
       outline: none;
@@ -228,6 +273,7 @@
       color: #fff;
       cursor: pointer;
       margin-top: 5px;
+      outline: none;
       &:disabled {
         background-color: #778289;
         opacity: .6;

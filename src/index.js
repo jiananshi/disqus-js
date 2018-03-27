@@ -1,5 +1,5 @@
 import 'normalize.css';
-import './global.css';
+import './styles/global.css';
 import Vue from 'vue';
 
 class RequiredParamsError extends Error {

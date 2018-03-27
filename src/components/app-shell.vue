@@ -28,7 +28,11 @@
 
 
 .comments-shell {
+  position: absolute;
+  left: 0;
+  right: 0;
   .comments-shell__item {
+    position: relative;
     display: flex;
     padding: 0 15px;
     margin-bottom: 24px;

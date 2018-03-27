@@ -1,6 +1,9 @@
 <template>
   <ul class="comments-container">
-    <li class="comment" v-for="comment in comments">
+    <li
+      class="comment"
+      :class="{ 'comment__reponse': comment.parent }"
+      v-for="comment in comments">
       <img :src="comment.author.avatar.cache" alt="avatar" class="avatar">
       <div>
         <header>
@@ -8,6 +11,7 @@
           <span class="comment__date">{{ timeago(comment.createdAt) }}</span>
         </header>
         <p class="comment__content">{{ comment.raw_message }}</p>
+        <p class="comment__reply">回复</p>
       </div>
     </li>
   </ul>
@@ -32,7 +36,7 @@
           case gap < 31536E6: return Math.round(gap / 2592E6) + ' 个月前';
           case gap >= 31536E6: return Math.round(gap / 31536E6) + ' 年前';
         }
-      }   
+      }
     }
   };
 </script>
@@ -44,6 +48,9 @@
     align-items: top;
     padding: 0 15px;
     margin-bottom: 24px;
+    &.comment__reponse {
+      margin-left: 48px;
+    }
     > .avatar {
       flex-shrink: 0;
       width: 48px;
@@ -52,17 +59,25 @@
       border-radius: 3px;
     }
     .comment__author {
-      color: #579DF8; 
+      color: #579DF8;
       margin-right: 14px;
       font-weight: 500;
     }
     .comment__date {
       color: #999;
-      font-size: .8em; 
+      font-size: .8em;
     }
     .comment__content {
-      margin-top: 7px; 
+      margin-top: 7px;
       color: #333;
+    }
+    .comment__reply {
+      color: #409eff;
+      cursor: pointer;
+      margin-top: 7px;
+      &:hover {
+        opacity: .8;
+      }
     }
     .responseform { margin-top: 15px; }
     .date {
