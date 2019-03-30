@@ -1,6 +1,6 @@
 {
   "name": "disqusjs",
-  "version": "2.0.7",
+  "version": "2.0.8",
   "description": "disqus client sdk",
   "main": "index.js",
   "scripts": {
